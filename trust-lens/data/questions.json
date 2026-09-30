@@ -1,8 +1,0 @@
-{
-  "now": "2026-09",
-  "questions": [
-    {"id": "leaver-bonus", "text": "How is a leaver’s year-end bonus calculated?", "expert": "Nadia Peeters, Payroll BE"},
-    {"id": "new-hire-deadline", "text": "Which deadline applies for reporting a new hire?", "expert": "Lea Martin, Compliance"},
-    {"id": "retro-correction", "text": "Who can approve a retroactive payslip correction?", "expert": "Sara Janssens, Finance Ops"}
-  ]
-}
