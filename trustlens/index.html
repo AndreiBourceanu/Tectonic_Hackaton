@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TrustLens - know why you can rely on an answer</title>
+  <link rel="stylesheet" href="src/styles.css">
+</head>
+<body>
+  <header class="top">
+    <div class="brand">
+      <span class="mark" aria-hidden="true"></span>
+      <div>
+        <h1>TrustLens</h1>
+        <p>From "I found something" to "I understand why I can rely on it"</p>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Views">
+      <button role="tab" data-tab="answer" aria-selected="true">Answer a customer</button>
+      <button role="tab" data-tab="health" aria-selected="false">Knowledge health</button>
+      <button role="tab" data-tab="how" aria-selected="false">How trust is calculated</button>
+    </nav>
+  </header>
+
+  <main id="app" tabindex="-1"></main>
+
+  <footer class="foot">
+    Proof of concept built for the SD Worx hackathon. All documents, people and figures are synthetic and illustrative, not payroll or legal advice.
+  </footer>
+
+  <script src="src/data.js"></script>
+  <script src="src/engine.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
