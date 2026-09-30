@@ -33,6 +33,8 @@ h2{font-size:1.05rem;margin:26px 0 10px}
 .exp{font-size:.88rem;color:var(--mute);min-height:1.4em}
 .tag{font-size:.78rem;border:1px solid var(--line);border-radius:99px;padding:1px 8px;color:var(--mute)}
 @media(max-width:600px){.seg{grid-template-columns:repeat(2,1fr)}}
+button.doc{font:inherit;font-size:.82rem;margin-top:8px;background:none;border:1px solid var(--line);color:var(--acc);border-radius:8px;padding:4px 10px;cursor:pointer}
+pre.file{white-space:pre-wrap;font:.82rem/1.5 ui-monospace,Menlo,monospace;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:12px;margin:8px 0 0;max-height:280px;overflow:auto}
 footer{margin-top:24px;color:var(--mute);font-size:.85rem}
 </style></head><body><main>
 <h1>Don’t just find the answer. See why you can rely on it.</h1>
@@ -49,7 +51,8 @@ const $=id=>document.getElementById(id);
 const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const COLOR={rely:'var(--ok)',check:'var(--mid)',hold:'var(--bad)'};
 const SEGS=[['fresh','Fresh',30],['owner','Owner',20],['applies','Applies',30],['agreed','Agreed',20]];
-let open={};
+let open={},docs={},shown={};
+async function toggle(f){if(!docs[f])docs[f]=(await api('/api/documents/'+encodeURIComponent(f))).body;shown[f]=!shown[f];draw()}
 async function api(path,body){
  const r=await fetch(path,body?{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}:undefined);
  const j=await r.json(); if(!r.ok) throw new Error(j.error||r.statusText); return j;
@@ -74,7 +77,7 @@ async function draw(){
  d.sources.forEach((s,i)=>{
   const id=d.questionId+i+d.country,sel=open[id]||'applies',r=s.score;
   const seg=SEGS.map(([k,l,m])=>`<button onclick="op('${id}','${k}')" aria-pressed="${sel==k}"><i style="width:${r[k]/m*100}%"></i><span>${l} ${r[k]}/${m}</span></button>`).join('');
-  h+=`<div class="src ${r.applies?'':'out'}"><div class="top"><div><strong>${esc(s.title)}</strong> <span class="tag">${esc(s.type)}</span></div><div class="sc">${r.total}/100</div></div><div style="color:var(--mute)">Says: “${esc(s.says)}”</div><div class="seg">${seg}</div><div class="exp">${esc(s.why[sel])}</div></div>`});
+  h+=`<div class="src ${r.applies?'':'out'}"><div class="top"><div><strong>${esc(s.title)}</strong> <span class="tag">${esc(s.type)}</span></div><div class="sc">${r.total}/100</div></div><div style="color:var(--mute)">Says: “${esc(s.says)}”</div><div class="seg">${seg}</div><div class="exp">${esc(s.why[sel])}</div><button class="doc" onclick="toggle('${s.file}')">${shown[s.file]?'Hide':'Open'} source file (${s.file})</button>${shown[s.file]?'<pre class="file">'+esc(docs[s.file])+'</pre>':''}</div>`});
  $('out').innerHTML=h;
 }
 function op(id,k){open[id]=k;draw()}

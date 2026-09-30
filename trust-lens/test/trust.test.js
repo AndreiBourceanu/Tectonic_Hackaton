@@ -1,10 +1,8 @@
 'use strict';
 const test = require('node:test');
 const assert = require('node:assert/strict');
-const fs = require('node:fs');
-const path = require('node:path');
 const { answer, scoreSource, parseMonth } = require('../src/trust');
-const KB = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'knowledge.json'), 'utf8'));
+const KB = require('../src/ingest').load();
 const NOW = '2026-09';
 const q = id => KB.questions.find(x => x.id === id);
 

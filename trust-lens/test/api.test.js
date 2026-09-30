@@ -59,3 +59,20 @@ test('GET /api/gaps logs non-reliable answers only', async () => {
 test('unknown route returns 404', async () => {
   assert.equal((await fetch(base + '/nope')).status, 404);
 });
+
+test('GET /api/documents lists corpus files without bodies', async () => {
+  const j = await (await fetch(base + '/api/documents')).json();
+  assert.equal(j.length, 11);
+  assert.ok(j.every(d => d.body === undefined));
+});
+
+test('GET /api/documents/:file returns the source text; unknown file is 404', async () => {
+  const j = await (await fetch(base + '/api/documents/payroll-manual-v7.md')).json();
+  assert.match(j.body, /pro rata by months worked/);
+  assert.equal((await fetch(base + '/api/documents/..%2Fpackage.json')).status, 404);
+});
+
+test('answers point back to their source file', async () => {
+  const j = await (await post('/api/answer', { questionId: 'leaver-bonus', country: 'BE' })).json();
+  assert.equal(j.sources[0].file, 'payroll-manual-v7.md');
+});

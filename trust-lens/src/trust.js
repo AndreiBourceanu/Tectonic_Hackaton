@@ -33,7 +33,7 @@ function answer(question, country, now) {
   const sources = question.sources
     .map(s => {
       const score = scoreSource(s, country, question.sources, now);
-      return { title: s.title, type: s.type, date: s.date, owner: s.owner, countries: s.countries,
+      return { file: s.file, title: s.title, type: s.type, date: s.date, owner: s.owner, countries: s.countries,
                says: s.says, claim: s.claim, score, why: explain(s, score, country) };
     })
     .sort((a, b) => b.score.total - a.score.total);

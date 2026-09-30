@@ -4,7 +4,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { answer, COUNTRIES, MAX } = require('./trust');
 
-const KB = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'data', 'knowledge.json'), 'utf8'));
+const { load } = require('./ingest');
+const KB = load();
 const INDEX = path.join(__dirname, '..', 'public', 'index.html');
 
 function createServer({ now = process.env.TRUST_NOW || KB.now } = {}) {
@@ -27,6 +28,13 @@ function createServer({ now = process.env.TRUST_NOW || KB.now } = {}) {
       if (req.method === 'GET' && url.pathname === '/api/health') return send(res, 200, { ok: true, now });
       if (req.method === 'GET' && url.pathname === '/api/questions') {
         return send(res, 200, { now, countries: COUNTRIES, max: MAX, questions: KB.questions.map(({ id, text }) => ({ id, text })) });
+      }
+      if (req.method === 'GET' && url.pathname === '/api/documents') {
+        return send(res, 200, KB.documents.map(({ body, ...meta }) => meta));
+      }
+      if (req.method === 'GET' && url.pathname.startsWith('/api/documents/')) {
+        const doc = KB.documents.find(d => d.file === decodeURIComponent(url.pathname.slice(15)));
+        return doc ? send(res, 200, doc) : send(res, 404, { error: 'Document not found' });
       }
       if (req.method === 'POST' && url.pathname === '/api/answer') {
         const { questionId, country } = await readJson(req);
